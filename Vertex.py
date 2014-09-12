@@ -1,9 +1,10 @@
 class Vertex(object):
-	def __init__(self, name):
+	def __init__(self, name, status=0):
 		self.name = name
 		self.adjacencies= []
 		self.outdegree = 0
 		self.indegree = 0
+		self.status = status
 	def addAdjacency(self, neighbour):
 		if len(self.adjacencies) ==0 or not neighbour.name in self.adjacencies:
 			self.adjacencies.append(neighbour.name)
