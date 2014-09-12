@@ -21,7 +21,6 @@ class Graph(object):
 			self.vertexes.append(start)
 		if len(self.vertexes) == 0 or not end in self.vertexes:
 			self.vertexes.append(end)
-
 		vert = self.getVertex(edge.start)
 		#update the adjacency and degree
 		#the in-degree of end will increment too
@@ -68,22 +67,27 @@ class Graph(object):
 					break
 
 			#create a fake vertex if there is no proper choice
-			fakevex = Vertex(str(uuid.uuid1()), 1)
+			fake = None
 			if outvex is None:
-				outvex = fakevex
-				Tset.append(fakevex)
+				fake = outvex = Vertex(str(uuid.uuid1()), 1)
 			elif invex is None:
-				invex = fakevex
-				Tset.append(fakevex)
+				fake = invex = Vertex(str(uuid.uuid1()), 1)
+
 			#create a fake edge: outvex=>invex
-			#print("add edge from " + outvex.name + " to " +  invex.name)
+			print("add edge from " + outvex.name + " to " +  invex.name)
 			self.addEdge(Edge(outvex.name, invex.name, 1))
 
+			#update fake status: SHOULD mark it as a fake vertex
+			if not fake is None:
+				self.getVertex(fake.name).status = 1
+
 			#remove the vertex from Tset if the indegree == outdegree
-			for vex in [outvex, invex]:
-				if vex.indegree == vex.outdegree :
-					#print("remove " + vex.name)
-					Tset.remove(vex)
+			#TODO: this should imporve. this should be submental instead of call getTSet directly
+			#for vex in [outvex, invex]:
+			#	if vex.indegree == vex.outdegree :
+			#		#print("remove " + vex.name)
+			#		Tset.remove(vex)
+			Tset = self.getTSet()
 
 #this is a test
 if __name__ =='__main__':
