@@ -20,18 +20,17 @@ class Graph(object):
 			self.vertexes.append(start)
 		if len(self.vertexes) == 0 or not end in self.vertexes:
 			self.vertexes.append(end)
-		#update the adjacency
-		self.getVertex(edge.start).addAdjacency(edge.end)
+
+		vert = self.getVertex(edge.start)
+		#update the adjacency and degree
+		#the in-degre of end will increment too
+		vert.addAdjacency(self.getVertex(edge.end))
 
 	def getVertex(self, name):
 		for vert in self.vertexes:
 			if vert.name == name:
 				return vert
 		return None
-
-	def updateDegree(self, edge):
-		return None
-		
 		
 	def dump(self):
 		for edge in self.edges:
