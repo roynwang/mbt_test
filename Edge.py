@@ -20,6 +20,8 @@ class Edge(object):
 
 	def hit(self):
 		self.hitted = 1
+	def dump(self):
+		print(self.start + " => " + self.end) 
 	def __eq__(self, other):
 		return self.start == other.start and self.end == other.end
 

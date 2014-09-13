@@ -39,6 +39,20 @@ class Graph(object):
 			if edge.start == start  and edge.end == end and (hitted is None or edge.hitted == hitted):
 				return edge
 		return None
+
+	def getStartVex(self):
+		ret = []
+		for vex in self.vertexes:
+			if vex.postype & 1 != 0:
+				ret.append(vex)
+		return ret
+	def getEndVex(self):
+		ret = []
+		for vex in self.vertexes:
+			if vex.postype & 2 != 0:
+				ret.append(vex)
+		return ret
+
 		
 	def dump(self):
 		for edge in self.edges:
@@ -100,12 +114,8 @@ class Graph(object):
 	def getEurlerCircuit(self):
 		ret = []
 		#select start
-		start = None
-		for v in self.vertexes :
-			if v.postype & 1 == 1:
-				start = v
-				break
-		print "*****selected " + v.name + " as start "
+		start = self.getStartVex()[0]
+		#print "*****selected " + start.name + " as start "
 		#select edge
 		while 1:
 			#select the edge
@@ -123,6 +133,39 @@ class Graph(object):
 			#pprint(vars(edge))
 			start = self.getVertex(edge.end)
 			#print "*****selected " + start.name + " as start "
+	def getPathSet(self, circuit):
+		ret = []
+		curset = []
+		for edge in circuit:
+			#if is a fake, ignore it
+			if edge.status == 1 and len(curset) != 0:
+				self.fixPath(curset)
+				ret.append(curset)
+				curset = []
+			#if is a normal edge add to the curset
+			if edge.status == 0:
+				curset.append(edge)
+		return ret
+
+
+	def getShortestPath(self, start, end):
+		return []
+	#if the start vex is not start type, should fix a path on the head 
+	#if the end vex is not end type, should append a tail path
+	def fixPath(self,path):
+		#if it is not a start vex
+		start = self.getVertex(path[0].start)
+		end = self.getVertex(path[-1].end)
+		head = []
+		tail = []
+		if start.postype & 1 != 0:
+			head = self.getShortestPath(self.getStartVex()[0].name, start.name)
+		if end.postype & 2 != 0:
+			tail = self.getShortestPath(end.name, self.getEndVex()[1].name)
+		return head + path + tail
+
+	
+		
 
 #this is a test
 if __name__ =='__main__':
@@ -130,11 +173,13 @@ if __name__ =='__main__':
 	edge2 = Edge("A","C")
 	edge3 = Edge("B","D")
 	edge4 = Edge("C","D")
+	edge5 = Edge("B","C")
 	g = Graph()
 	g.addEdge(edge1)
 	g.addEdge(edge2)
 	g.addEdge(edge3)
 	g.addEdge(edge4)
+	g.addEdge(edge5)
 
 	g.setVexPtype("A",1)
 	g.setVexPtype("B",2)
@@ -144,6 +189,12 @@ if __name__ =='__main__':
 	g.eulerize()
 	#g.dump()
 	edges = g.getEurlerCircuit()
-	for edge in edges:
-		pprint(vars(edge))
+	#for edge in edges:
+	#	pprint(vars(edge))
+	
+	pathset = g.getPathSet(edges)
+	for path in pathset:
+		print "**********"
+		for vex in path:
+			vex.dump()
 
