@@ -7,11 +7,13 @@ class Edge(object):
 	def __init__(self,start,end,status=0):
 		#support str/Vertex parameters
 		if isinstance(start, Vertex):
-			start = start.name
+			self.start = start
+		else:
+			self.start = Vertex(start)
 		if isinstance(end, Vertex):
-			end = end.name
-		self.start = start
-		self.end = end
+			self.end = end
+		else:
+			self.end = Vertex(end)
 		self.status = status
 		self.hitted = 0
 
@@ -21,7 +23,7 @@ class Edge(object):
 	def hit(self):
 		self.hitted = 1
 	def dump(self):
-		print(self.start + " => " + self.end) 
+		print(str(self.status) + ": " + self.start.name + " => " + self.end.name) 
 	def __eq__(self, other):
 		return self.start == other.start and self.end == other.end
 

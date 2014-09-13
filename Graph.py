@@ -15,8 +15,8 @@ class Graph(object):
 			self.updateVertex(edge)
 	def updateVertex(self, edge):
 		# add the vertex
-		start = Vertex(edge.start)
-		end = Vertex(edge.end)
+		start = edge.start
+		end = edge.end
 		if len(self.vertexes) == 0 or not start in self.vertexes:
 			self.vertexes.append(start)
 		if len(self.vertexes) == 0 or not end in self.vertexes:
@@ -26,9 +26,16 @@ class Graph(object):
 		#the in-degree of end will increment too
 		vert.addSuccessor(self.getVertex(edge.end))
 
-	def getVertex(self, name):
+	def getVertex(self, vex):
+		eq = None
+		if isinstance(vex, Vertex) :
+			#print "vex is Vertex"
+			eq = lambda x,y:  x.name == y.name
+		else:
+			#print "vex is str"
+			eq = lambda x,y: x == y.name
 		for vert in self.vertexes:
-			if vert.name == name:
+			if eq(vex, vert):
 				return vert
 		return None
 	def setVexPtype(self, name, ptype):
@@ -56,7 +63,7 @@ class Graph(object):
 		
 	def dump(self):
 		for edge in self.edges:
-			pprint(vars(edge))
+			edge.dump()
 		print("================")
 		for ver in self.vertexes:
 			pprint(vars(ver))
@@ -84,8 +91,7 @@ class Graph(object):
 					break
 			#select invex indegree<outdegree and not adjacent to outvex
 			for vex in Tset:
-				if vex.indegree<vex.outdegree and (outvex is None or vex.name not in
-						outvex.successor):
+				if vex.indegree<vex.outdegree and not outvex.isSuccessor(vex):
 					invex = vex
 					break
 
@@ -120,7 +126,7 @@ class Graph(object):
 		while 1:
 			#select the edge
 			for end in start.successor:
-				edge = self.getEdge(start.name, end, 0)
+				edge = self.getEdge(start, end, 0)
 				if not edge is None:
 					break
 			#return if no edge match
@@ -164,9 +170,6 @@ class Graph(object):
 			tail = self.getShortestPath(end.name, self.getEndVex()[1].name)
 		return head + path + tail
 
-	
-		
-
 #this is a test
 if __name__ =='__main__':
 	edge1 = Edge("A","B")
@@ -187,7 +190,7 @@ if __name__ =='__main__':
 	g.setVexPtype("D",2)
 
 	g.eulerize()
-	#g.dump()
+	g.dump()
 	edges = g.getEurlerCircuit()
 	#for edge in edges:
 	#	pprint(vars(edge))
