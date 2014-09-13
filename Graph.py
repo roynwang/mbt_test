@@ -24,17 +24,26 @@ class Graph(object):
 		vert = self.getVertex(edge.start)
 		#update the adjacency and degree
 		#the in-degree of end will increment too
-		vert.addAdjacency(self.getVertex(edge.end))
+		vert.addSuccessor(self.getVertex(edge.end))
 
 	def getVertex(self, name):
 		for vert in self.vertexes:
 			if vert.name == name:
 				return vert
 		return None
+	def setVexPtype(self, name, ptype):
+		self.getVertex(name).setpostype(ptype)
+
+	def getEdge(self, start, end, hitted = None):
+		for edge in self.edges:
+			if edge.start == start  and edge.end == end and (hitted is None or edge.hitted == hitted):
+				return edge
+		return None
 		
 	def dump(self):
 		for edge in self.edges:
 			pprint(vars(edge))
+		print("================")
 		for ver in self.vertexes:
 			pprint(vars(ver))
 
@@ -62,7 +71,7 @@ class Graph(object):
 			#select invex indegree<outdegree and not adjacent to outvex
 			for vex in Tset:
 				if vex.indegree<vex.outdegree and (outvex is None or vex.name not in
-						outvex.adjacencies):
+						outvex.successor):
 					invex = vex
 					break
 
@@ -88,6 +97,32 @@ class Graph(object):
 			#		#print("remove " + vex.name)
 			#		Tset.remove(vex)
 			Tset = self.getTSet()
+	def getEurlerCircuit(self):
+		ret = []
+		#select start
+		start = None
+		for v in self.vertexes :
+			if v.postype & 1 == 1:
+				start = v
+				break
+		print "*****selected " + v.name + " as start "
+		#select edge
+		while 1:
+			#select the edge
+			for end in start.successor:
+				edge = self.getEdge(start.name, end, 0)
+				if not edge is None:
+					break
+			#return if no edge match
+			if edge is None:
+				return ret
+			#mark as hitted
+			edge.hit()
+			#pprint("select edge: " + edge.start + ":" + edge.end)
+			ret.append(edge)
+			#pprint(vars(edge))
+			start = self.getVertex(edge.end)
+			#print "*****selected " + start.name + " as start "
 
 #this is a test
 if __name__ =='__main__':
@@ -100,5 +135,15 @@ if __name__ =='__main__':
 	g.addEdge(edge2)
 	g.addEdge(edge3)
 	g.addEdge(edge4)
+
+	g.setVexPtype("A",1)
+	g.setVexPtype("B",2)
+	g.setVexPtype("C",2)
+	g.setVexPtype("D",2)
+
 	g.eulerize()
-	g.dump()
+	#g.dump()
+	edges = g.getEurlerCircuit()
+	for edge in edges:
+		pprint(vars(edge))
+
