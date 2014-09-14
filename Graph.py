@@ -68,10 +68,10 @@ class Graph(object):
 		
 	def dump(self):
 		for edge in self.edges:
-			edge.dump()
+			print str(edge)
 		print("================")
 		for ver in self.vertexes:
-			pprint(vars(ver))
+			print str(ver)
 
 
 	#algrithem 
@@ -231,5 +231,5 @@ if __name__ =='__main__':
 	for path in pathset:
 		print "**********"
 		for vex in path:
-			vex.dump()
+			print(str(vex))
 

@@ -6,6 +6,7 @@ class FSM(object):
 		self.name = "go"
 		self.actionset = []
 		self.startstates = []
+		self.pathset = []
 
 	def run(self, state):
 		untracked = [state]
@@ -18,7 +19,7 @@ class FSM(object):
 				#get new status
 				newsta = action.transfer(state)
 				#get new edge
-				edge = Edge(state,newsta)
+				edge = Edge(state,newsta, 0, action.name)
 				#add to edge set if it's new
 				if not edge in edgset:
 					edgset.append(edge)
@@ -28,20 +29,26 @@ class FSM(object):
 			tracked.append(state)
 			untracked = midstates
 		return edgset
+	
+	def runall(self):
+		for start in self.startstates:
+			self.pathset += self.run(start)
+		self.pathset = list(set(self.pathset))
+		return self.pathset
 
 
 if __name__ == '__main__':
 	fsm = FSM()
 	action1 = Action()
 	action1.transfer = lambda x : (x == "1" and "1" ) or "2"
+	action1.name = "rule 1"
 	action2 = Action()
 	action2.transfer = lambda x : (x == "2" and "1") or "2"
+	action2.name = "rule 2"
 	fsm.actionset.append(action1)
 	fsm.actionset.append(action2)
-	edgeset = fsm.run("1")
-	for edge in edgeset:
-		edge.dump()
-				
-
-			
+	fsm.startstates = ["1"]
+	fsm.runall()
+	for edge in fsm.pathset:
+		print(str(edge))
 
