@@ -192,8 +192,8 @@ class Graph(object):
 			head = self.convertVexesToPaths(head)
 #			self.outputpath(head)
 		if end.postype & 2 == 0:
-			#print "shortest " + end.name + "=>" + self.getEndVex()[1].name
-			tail = self.getShortestPath(end, self.getEndVex()[1])
+			#print "shortest " + end.name + "=>" + self.getEndVex()[0].name
+			tail = self.getShortestPath(end, self.getEndVex()[0])
 			tail = self.convertVexesToPaths(tail)
 #		self.outputpath(head + path + tail)
 		return head + path + tail
@@ -214,9 +214,11 @@ if __name__ =='__main__':
 	g.addEdge(edge4)
 	g.addEdge(edge5)
 
+	#1 mean the start state
+	#2 mean the end state
 	g.setVexPtype("A",1)
-	g.setVexPtype("B",2)
-	g.setVexPtype("C",2)
+	#g.setVexPtype("B",2)
+	#g.setVexPtype("C",2)
 	g.setVexPtype("D",2)
 
 	g.eulerize()
