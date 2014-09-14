@@ -26,6 +26,11 @@ class Graph(object):
 		#the in-degree of end will increment too
 		vert.addSuccessor(self.getVertex(edge.end))
 
+	def outputpath(self, pathset):
+		for path in pathset:
+			print path.start.name + "=>" + path.end.name + "|",
+		print("")
+
 	def getVertex(self, vex):
 		eq = None
 		if isinstance(vex, Vertex) :
@@ -104,19 +109,18 @@ class Graph(object):
 
 			#create a fake edge: outvex=>invex
 			print("add edge from " + outvex.name + " to " +  invex.name)
-			self.addEdge(Edge(outvex.name, invex.name, 1))
+			self.addEdge(Edge(outvex, invex, 1))
 
 			#update fake status: SHOULD mark it as a fake vertex
 			if not fake is None:
-				self.getVertex(fake.name).status = 1
+				fake.status = 1
+				Tset.append(fake)
 
 			#remove the vertex from Tset if the indegree == outdegree
-			#TODO: this should imporve. this should be submental instead of call getTSet directly
-			#for vex in [outvex, invex]:
-			#	if vex.indegree == vex.outdegree :
-			#		#print("remove " + vex.name)
-			#		Tset.remove(vex)
-			Tset = self.getTSet()
+			for vex in [outvex, invex]:
+				if vex.indegree == vex.outdegree :
+					Tset.remove(vex)
+
 	def getEurlerCircuit(self):
 		ret = []
 		#select start
@@ -145,17 +149,35 @@ class Graph(object):
 		for edge in circuit:
 			#if is a fake, ignore it
 			if edge.status == 1 and len(curset) != 0:
-				self.fixPath(curset)
+				curset = self.fixPath(curset)
 				ret.append(curset)
+#				self.outputpath(curset)
 				curset = []
 			#if is a normal edge add to the curset
 			if edge.status == 0:
 				curset.append(edge)
 		return ret
 
-
 	def getShortestPath(self, start, end):
-		return []
+		tmp = []
+		#this is too avoid cycle, search will stop if the path length > vex count
+		size = len(self.vertexes)
+		if start == end:
+			return [start]
+		isfaked = lambda g,s,e: g.getEdge(s,e).isFaked()
+		for suc in start.successor:
+			if not isfaked(g, start, suc):
+				subset = self.getShortestPath(suc, end)
+				if len(subset) < size and len(subset) > 0 :
+					tmp = [start] + subset
+		return tmp
+
+	def convertVexesToPaths(self, vexes):
+		paths = []
+		for i in range(1,len(vexes)):
+			paths.append(self.getEdge(vexes[i-1], vexes[i]))
+		return paths
+
 	#if the start vex is not start type, should fix a path on the head 
 	#if the end vex is not end type, should append a tail path
 	def fixPath(self,path):
@@ -164,11 +186,19 @@ class Graph(object):
 		end = self.getVertex(path[-1].end)
 		head = []
 		tail = []
-		if start.postype & 1 != 0:
-			head = self.getShortestPath(self.getStartVex()[0].name, start.name)
-		if end.postype & 2 != 0:
-			tail = self.getShortestPath(end.name, self.getEndVex()[1].name)
+		if start.postype & 1 == 0:
+			#print "get shortest " + self.getStartVex()[0].name + "=>" + start.name
+			head = self.getShortestPath(self.getStartVex()[0], start)
+			head = self.convertVexesToPaths(head)
+#			self.outputpath(head)
+		if end.postype & 2 == 0:
+			#print "shortest " + end.name + "=>" + self.getEndVex()[1].name
+			tail = self.getShortestPath(end, self.getEndVex()[1])
+			tail = self.convertVexesToPaths(tail)
+#		self.outputpath(head + path + tail)
 		return head + path + tail
+
+
 
 #this is a test
 if __name__ =='__main__':
@@ -190,7 +220,7 @@ if __name__ =='__main__':
 	g.setVexPtype("D",2)
 
 	g.eulerize()
-	g.dump()
+	#g.dump()
 	edges = g.getEurlerCircuit()
 	#for edge in edges:
 	#	pprint(vars(edge))

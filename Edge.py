@@ -19,6 +19,9 @@ class Edge(object):
 
 	def getStates(self):
 		return (self.start, self.end)
+	
+	def isFaked(self):
+		return self.status == 1
 
 	def hit(self):
 		self.hitted = 1
