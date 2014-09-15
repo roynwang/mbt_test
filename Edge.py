@@ -29,8 +29,8 @@ class Edge(object):
 	def __str__(self):
 		objstr = "" 
 		objstr += str(self.action)
-		objstr += ("/" + str(self.status) + ": " + self.start.name + " => " + self.end.name) 
+		objstr += ("/" + str(self.status) + ": " + str(self.start) + " => " + str(self.end)) 
 		return objstr
 	def __eq__(self, other):
-		return self.start == other.start and self.end == other.end
+		return self.start == other.start and self.end == other.end and str(self.action) == str(other.action)
 

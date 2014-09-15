@@ -3,7 +3,7 @@
 
 class Action(object):
 	def __init__(self):
-		self.dict = []
+		self.name = 'test'
 	
 	def check(self):
 		raise NotImplementedError()
