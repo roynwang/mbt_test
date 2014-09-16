@@ -1,5 +1,6 @@
 from Edge import *
 from Action import *
+from Graph import *
 import copy
 
 class FSM(object):
@@ -31,15 +32,27 @@ class FSM(object):
 				#add to midstatus set if it's a new state
 				if not newsta in tracked and not newsta in midstates:
 					midstates.append(newsta)
-			print "====================" + str(len(midstates))
 			untracked = midstates
 		return edgset
 	
 	def explore(self):
+		#generate all edges
 		for start in self.startstates:
 			self.pathset += self.exploreSingle(start)
 		self.pathset = list(set(self.pathset))
-		return self.pathset
+
+		self.g = Graph()
+		#add all edges in graph
+		self.g.addEdge(self.pathset)
+		#set start states 
+		self.g.setVexPtype(self.startstates, 1)
+		
+
+		self.g.eulerize()
+		edges = self.g.getEurlerCircuit()
+		pathset = self.g.getPathSet(edges)
+		for path in pathset:
+			self.g.outputpath(path)
 
 
 if __name__ == '__main__':

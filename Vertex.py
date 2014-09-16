@@ -5,7 +5,7 @@ class Vertex(object):
 		self.outdegree = 0
 		self.indegree = 0
 		self.status = status
-		self.postype = 0
+		self.postype = 2
 
 	def addSuccessor(self, succ):
 		if len(self.successor) ==0 or not succ in self.successor:

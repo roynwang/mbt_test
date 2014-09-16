@@ -1,5 +1,6 @@
 from Action import *
 from FSM import *
+from Graph import *
 
 def transfer_blackon(status):
 	status['black'] = 'on'
@@ -53,8 +54,8 @@ if __name__ == '__main__':
 	fsm.actionset = [action1, action2,action3,action4,action5]
 	fsm.explore()
 
-	for edge in fsm.pathset:
-		print(str(edge))
+#	for edge in fsm.pathset:
+#		print(str(edge))
 
 
 

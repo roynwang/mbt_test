@@ -9,10 +9,14 @@ class Graph(object):
 		self.vertexes = []
 		self.edges = []
 		self.degreedict = {}
-	def addEdge(self, edge):
-		if not edge in self.edges:
-			self.edges.append(edge)
-			self.updateVertex(edge)
+	def addEdge(self, edges):
+		if isinstance(edges, Edge):
+			edges = [edges]
+
+		for edge in edges:
+			if not edge in self.edges:
+				self.edges.append(edge)
+				self.updateVertex(edge)
 	def updateVertex(self, edge):
 		# add the vertex
 		start = edge.start
@@ -27,24 +31,32 @@ class Graph(object):
 		vert.addSuccessor(self.getVertex(edge.end))
 
 	def outputpath(self, pathset):
+		start = True
 		for path in pathset:
-			print path.start.name + "=>" + path.end.name + "|",
+			if start:
+					print str(path.start),
+					start = False
+			print "=>|" +str(path.action) + "|",
+			print "=>" + str(path.end),
 		print("")
 
 	def getVertex(self, vex):
 		eq = None
-		if isinstance(vex, Vertex) :
-			#print "vex is Vertex"
-			eq = lambda x,y:  x.name == y.name
-		else:
+		if isinstance(vex, basestring) :
 			#print "vex is str"
 			eq = lambda x,y: x == y.name
+		else:
+			#print "vex is obj"
+			eq = lambda x,y:  str(x) == str(y)
 		for vert in self.vertexes:
 			if eq(vex, vert):
 				return vert
 		return None
-	def setVexPtype(self, name, ptype):
-		self.getVertex(name).setpostype(ptype)
+	def setVexPtype(self, names, ptype):
+		if not isinstance(names, list):
+			names = [names]
+		for name in names:
+			self.getVertex(name).setpostype(ptype)
 
 	def getEdge(self, start, end, hitted = None):
 		for edge in self.edges:
@@ -108,7 +120,7 @@ class Graph(object):
 				fake = invex = Vertex(str(uuid.uuid1()), 1)
 
 			#create a fake edge: outvex=>invex
-			print("add edge from " + outvex.name + " to " +  invex.name)
+			print("add edge from " + str(outvex) + " to " +  str(invex))
 			self.addEdge(Edge(outvex, invex, 1))
 
 			#update fake status: SHOULD mark it as a fake vertex
@@ -158,7 +170,7 @@ class Graph(object):
 				curset.append(edge)
 		return ret
 
-	def getShortestPath(self, start, end):
+	def getShortestPath(self, start, end, visited = []):
 		tmp = []
 		#this is too avoid cycle, search will stop if the path length > vex count
 		size = len(self.vertexes)
@@ -166,8 +178,8 @@ class Graph(object):
 			return [start]
 		isfaked = lambda g,s,e: g.getEdge(s,e).isFaked()
 		for suc in start.successor:
-			if not isfaked(g, start, suc):
-				subset = self.getShortestPath(suc, end)
+			if not suc in visited and not isfaked(self, start, suc):
+				subset = self.getShortestPath(suc, end, visited+[start])
 				if len(subset) < size and len(subset) > 0 :
 					tmp = [start] + subset
 		return tmp
