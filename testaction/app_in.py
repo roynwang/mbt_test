@@ -1,3 +1,4 @@
+from _commonfun import testfunction
 class app_in(object):
 	def __init__(self):
 		self.name = 'app_in'
@@ -5,3 +6,7 @@ class app_in(object):
 		if status['black'] != 'on':
 			status['app'] = 'on'
 		return status
+	def execute(self):
+		testfunction()
+		print self.name
+		return True

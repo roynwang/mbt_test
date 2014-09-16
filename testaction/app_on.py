@@ -6,3 +6,6 @@ class app_on(object):
 			status['app'] = 'on'
 		return status
 
+	def execute(self):
+		print self.name
+		return True

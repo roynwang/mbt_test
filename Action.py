@@ -8,3 +8,6 @@ class Action(object):
 	#it should return a status
 	def transfer(self,status):
 		raise NotImplementedError()
+
+	def execute(self):
+		raise NotImplementedError()

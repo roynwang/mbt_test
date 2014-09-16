@@ -23,7 +23,7 @@ class FSM(object):
 				#get new status
 				newsta = action.transfer(copy.deepcopy(state))
 				#get new edge
-				edge = Edge(state,newsta, 0, action.name)
+				edge = Edge(state,newsta, 0, action)
 
 				#add to edge set if it's new
 				
@@ -60,6 +60,16 @@ class FSM(object):
 		print "===========End========="
 		'''
 		self.cases = self.g.getPathSet(edges)
+	def execute_one(self, case):
+		for edge in case:
+			print "executing " + edge.action.name + " ... ..."
+			edge.action.execute()
+	def execute(self):
+		for case in self.cases:
+			print "=============Execution================"
+			self.execute_one(case)
+			print "================done================="
+		
 	def dumpcase(self):
 		i = 0
 		for case in self.cases:

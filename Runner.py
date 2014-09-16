@@ -13,7 +13,7 @@ class Runner(object):
 		self.fsm.actionset = self.loader.actions
 		self.fsm.explore()
 	def run(self):
-		self.fsm.dumpcase()
+		self.fsm.execute()
 
 if __name__ == '__main__':
 	runner = Runner("./testaction",[{'app':'na', 'black':'na'}])

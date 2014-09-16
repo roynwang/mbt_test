@@ -6,3 +6,7 @@ class app_off(object):
 		if status['app'] != 'na':
 			status['app'] = 'off'
 		return status
+
+	def execute(self):
+		print self.name
+		return True

@@ -2,13 +2,13 @@ import imp
 import pprint
 import os
 
+attrs = ["transfer", "execute"]
 class Loader(object):
 	def __init__(self, path):
-			self.path = path
-			self.mods = []
-			self.actions = []
+		self.path = path
+		self.mods = []
+		self.actions = []
 	def load_from_file(self,filepath):
-		print("loading " +  filepath)
 		py_mod = None
 		mod_name, file_ext = os.path.splitext(os.path.split(filepath)[-1])
 
@@ -16,24 +16,43 @@ class Loader(object):
 			py_mod = imp.load_source(mod_name, filepath)	
 		else:
 			return None
+		'''
 		#ignore the pyc file
-#		elif file_ext.lower() == '.pyc':
-#			py_mod = imp.load_compiled(mod_name, filepath)
-		
-		return getattr(py_mod,mod_name)
+		elif file_ext.lower() == '.pyc':
+			py_mod = imp.load_compiled(mod_name, filepath)
+		'''
+		cls = None
+		if hasattr(py_mod,mod_name):
+			cls = getattr(py_mod,mod_name)
+			if Loader._isaction(cls):
+				print("loaded action :" +  filepath)
+				return cls
+		else:
+			exec("from " + mod_name + " import *")
+			print("imported module :" +  filepath)
+		return None
 
 	def load(self):
 		if os.path.isfile(self.path):
 			self.mods.append(self.load_from_file(self.path))
 		elif os.path.isdir(self.path):
 			files = [ os.path.join(self.path,f) for f in os.listdir(self.path) if f.endswith('.py') and os.path.isfile(os.path.join(self.path,f)) ]
-			for file in files:
-				self.mods.append(self.load_from_file(file))
+			for f in files:
+				mod =self.load_from_file(f)
+				if not mod is None:
+					self.mods.append(mod)
 		self.createInstance()
+	@staticmethod
+	def _isaction(obj):
+		for attr in attrs:
+			if not hasattr(obj, attr):
+				return False
+		return True
 
 	def createInstance(self):
 		for mod in self.mods:
-			self.actions.append(mod())
+			obj = mod()
+			self.actions.append(obj)
 
 	def __str__(self):
 		ret = ''
@@ -49,7 +68,7 @@ if __name__ == "__main__":
 	loader = Loader("./testaction")
 	loader.load()
 	print str(loader)
-	
 
-		
-	
+
+
+
