@@ -29,6 +29,7 @@ class Loader(object):
 			files = [ os.path.join(self.path,f) for f in os.listdir(self.path) if f.endswith('.py') and os.path.isfile(os.path.join(self.path,f)) ]
 			for file in files:
 				self.mods.append(self.load_from_file(file))
+		self.createInstance()
 
 	def createInstance(self):
 		for mod in self.mods:
@@ -47,7 +48,6 @@ class Loader(object):
 if __name__ == "__main__":
 	loader = Loader("./testaction")
 	loader.load()
-	loader.createInstance()
 	print str(loader)
 	
 

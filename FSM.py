@@ -54,7 +54,11 @@ class FSM(object):
 
 		self.g.eulerize()
 		edges = self.g.getEurlerCircuit()
-
+		'''
+		print "===========Eu=========="
+		self.g.outputpath(edges)
+		print "===========End========="
+		'''
 		self.cases = self.g.getPathSet(edges)
 	def dumpcase(self):
 		i = 0

@@ -1,7 +1,7 @@
 class black_on(object):
     def __init__(self):
         self.name = 'black_on'
-        print("xxxxxxx")
+        print("init black_on")
 
     def transfer(self, status):
     	status['black'] = 'on'

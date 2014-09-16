@@ -52,7 +52,7 @@ if __name__ == '__main__':
 	action5.name = 'app_off'
 
 	fsm.startstates = [{'app':'na', 'black':'na'}]
-	fsm.actionset = [action1, action2,action3,action4,action5]
+	fsm.actionset = [action3,action5,action4,action1,action2]
 	fsm.explore()
 	fsm.dumpcase()
 
