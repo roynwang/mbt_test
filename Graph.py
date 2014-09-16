@@ -120,7 +120,7 @@ class Graph(object):
 				fake = invex = Vertex(str(uuid.uuid1()), 1)
 
 			#create a fake edge: outvex=>invex
-			print("add edge from " + str(outvex) + " to " +  str(invex))
+			print("add fake edge from " + str(outvex) + " to " +  str(invex))
 			self.addEdge(Edge(outvex, invex, 1))
 
 			#update fake status: SHOULD mark it as a fake vertex

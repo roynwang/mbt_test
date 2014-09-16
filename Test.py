@@ -7,6 +7,7 @@ def transfer_blackon(status):
 	if status['app'] == 'on':
 		status['app'] = 'off'
 	return status
+
 def transfer_blackoff(status):
 	status['black'] = 'off'
 	if status['app'] == 'off':
@@ -53,9 +54,5 @@ if __name__ == '__main__':
 	fsm.startstates = [{'app':'na', 'black':'na'}]
 	fsm.actionset = [action1, action2,action3,action4,action5]
 	fsm.explore()
-
-#	for edge in fsm.pathset:
-#		print(str(edge))
-
-
+	fsm.dumpcase()
 

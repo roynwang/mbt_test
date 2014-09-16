@@ -8,9 +8,10 @@ class FSM(object):
 		self.name = "go"
 		self.actionset = []
 		self.startstates = []
-		self.pathset = []
+		self.edgeset = []
+		self.cases = []
 
-	def exploreSingle(self, state):
+	def generateEdgeByState(self, state):
 		untracked = [state]
 		tracked = []
 		edgset = [] 
@@ -35,25 +36,32 @@ class FSM(object):
 			untracked = midstates
 		return edgset
 	
-	def explore(self):
+	def generateEdge(self):
 		#generate all edges
 		for start in self.startstates:
-			self.pathset += self.exploreSingle(start)
-		self.pathset = list(set(self.pathset))
+			self.edgeset += self.generateEdgeByState(start)
+		self.edgeset = list(set(self.edgeset))
 
+	def explore(self):
 		self.g = Graph()
+
+		#generate all edges
+		self.generateEdge()
 		#add all edges in graph
-		self.g.addEdge(self.pathset)
+		self.g.addEdge(self.edgeset)
 		#set start states 
 		self.g.setVexPtype(self.startstates, 1)
-		
 
 		self.g.eulerize()
 		edges = self.g.getEurlerCircuit()
-		pathset = self.g.getPathSet(edges)
-		for path in pathset:
-			self.g.outputpath(path)
 
+		self.cases = self.g.getPathSet(edges)
+	def dumpcase(self):
+		i = 0
+		for case in self.cases:
+			print("Case " + str(i) + ": " ),
+			self.g.outputpath(case)
+			i+=1
 
 if __name__ == '__main__':
 	fsm = FSM()
@@ -66,6 +74,6 @@ if __name__ == '__main__':
 	fsm.actionset.append(action1)
 	fsm.actionset.append(action2)
 	fsm.startstates = ["1"]
-	fsm.explore()
-	for edge in fsm.pathset:
+	fsm.generateEdge()
+	for edge in fsm.edgeset:
 		print(str(edge))
