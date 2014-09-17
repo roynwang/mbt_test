@@ -10,6 +10,7 @@ class FSM(object):
 		self.startstates = []
 		self.edgeset = []
 		self.cases = []
+		self.g = None
 
 	def generateEdgeByState(self, state):
 		untracked = [state]
@@ -76,6 +77,8 @@ class FSM(object):
 			print("Case " + str(i) + ": " ),
 			self.g.outputpath(case)
 			i+=1
+	def savesvg(self):
+		self.g.savesvg()
 
 if __name__ == '__main__':
 	fsm = FSM()
@@ -89,5 +92,5 @@ if __name__ == '__main__':
 	fsm.actionset.append(action2)
 	fsm.startstates = ["1"]
 	fsm.generateEdge()
-	for edge in fsm.edgeset:
-		print(str(edge))
+	#for edge in fsm.edgeset:
+	#	print(str(edge))

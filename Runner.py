@@ -14,10 +14,13 @@ class Runner(object):
 		self.fsm.explore()
 	def run(self):
 		self.fsm.execute()
+	def savesvg(self):
+		self.fsm.savesvg()
 
 if __name__ == '__main__':
 	runner = Runner("./testaction",[{'app':'na', 'black':'na'}])
 	runner.prepare()
 	runner.run()
+	runner.savesvg()
 		
 		

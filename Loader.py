@@ -2,8 +2,9 @@ import imp
 import pprint
 import os
 
-attrs = ["transfer", "execute"]
 class Loader(object):
+
+	ATTRS = ["transfer", "execute"]
 	def __init__(self, path):
 		self.path = path
 		self.mods = []
@@ -44,7 +45,7 @@ class Loader(object):
 		self.createInstance()
 	@staticmethod
 	def _isaction(obj):
-		for attr in attrs:
+		for attr in Loader.ATTRS:
 			if not hasattr(obj, attr):
 				return False
 		return True

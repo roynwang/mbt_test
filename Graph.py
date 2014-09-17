@@ -3,6 +3,7 @@ from Vertex import *
 import json
 from pprint import pprint
 import uuid
+from Drawer import *
 
 class Graph(object):
 	def __init__(self):
@@ -209,7 +210,11 @@ class Graph(object):
 			tail = self.convertVexesToPaths(tail)
 #		self.outputpath(head + path + tail)
 		return head + path + tail
-
+	def savesvg(self):
+		drawer = Drawer(self)
+		drawer.gen()
+		print "save as svg file"
+		drawer.save()
 
 
 #this is a test
@@ -244,4 +249,5 @@ if __name__ =='__main__':
 		print "**********"
 		for vex in path:
 			print(str(vex))
+	g.savesvg()
 
