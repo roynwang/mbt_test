@@ -37,6 +37,9 @@ class Loader(object):
 			self.mods.append(self.load_from_file(self.path))
 		elif os.path.isdir(self.path):
 			files = [ os.path.join(self.path,f) for f in os.listdir(self.path) if f.endswith('.py') and os.path.isfile(os.path.join(self.path,f)) ]
+			#sort the file with alphabet order
+			#this is to keep the action's dependeny loading at first 
+			files.sort()
 			for f in files:
 				mod =self.load_from_file(f)
 				if not mod is None:

@@ -63,12 +63,14 @@ class FSM(object):
 	def execute_one(self, case):
 		for edge in case:
 			print "executing " + edge.action.name + " ... ..."
-			edge.action.execute()
+			if not edge.action.execute():
+				return False
+		return True
 	def execute(self):
 		for case in self.cases:
 			print "=============Execution================"
-			self.execute_one(case)
-			print "================done================="
+			result = self.execute_one(case)
+			print("================%s=================" % str(result) )
 		
 	def dumpcase(self):
 		i = 0
