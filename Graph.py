@@ -133,28 +133,38 @@ class Graph(object):
 			for vex in [outvex, invex]:
 				if vex.indegree == vex.outdegree :
 					Tset.remove(vex)
+	def refreshVertexes(self):
+		ordered = []
+		for edge in self.edges:
+			if not edge.start in ordered :
+				ordered.append(edge.start)
+			if not edge.end in ordered :
+				ordered.append(edge.end)
+		self.vertexes = ordered
 
 	def getEurlerCircuit(self):
 		ret = []
 		ordered = []
 		#select start
 		start = self.getStartVex()[0]
+
 		#print "*****selected " + start.name + " as start "
 		#select edge
 		while 1:
-			if start not in ordered:
-				ordered.append(start)
 			#select the edge
+			edge = None
 			for end in start.successor:
 				edge = self.getEdge(start, end, 0)
 				if not edge is None:
 					break
 			#return if no edge match
 			if edge is None:
-				self.vertexes = ordered
+				self.edges = ret
+				self.refreshVertexes()
 				return ret
 			#mark as hitted
 			edge.hit()
+
 			#pprint("select edge: " + edge.start + ":" + edge.end)
 			ret.append(edge)
 			#pprint(vars(edge))
@@ -247,7 +257,6 @@ if __name__ =='__main__':
 	edges = g.getEurlerCircuit()
 	#for edge in edges:
 	#	pprint(vars(edge))
-	
 	pathset = g.getPathSet(edges)
 	for path in pathset:
 		print "**********"
