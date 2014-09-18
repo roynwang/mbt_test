@@ -15,10 +15,24 @@ class Drawer(object):
 		self.dwg = svgwrite.Drawing("test.svg")
 
 		#add marker
-		self.marker = self.dwg.marker(insert=(3,2), size=(10,10), orient='auto')
+		marker = self.dwg.marker(insert=(3,2), size=(10,10), orient='auto')
 		arrow = self.dwg.path(d=("M0,0 L4,2 0,4"), stroke_width=1, stroke='black', fill='none')
-		self.marker.add(arrow)
-		self.dwg.defs.add(self.marker)
+		marker.add(arrow)
+		self.dwg.defs.add(marker)
+		self.marker = marker.get_funciri()
+
+		#add linear gradient
+		lgcw = svgwrite.gradients.LinearGradient(("0%","0%"),("0%","100%"))
+		lgcw.add_stop_color("0%","grey",0.7)
+		lgcw.add_stop_color("100%","black",1)
+		self.dwg.defs.add(lgcw)
+		self.lgcw = lgcw.get_paint_server()
+
+		lgacw = svgwrite.gradients.LinearGradient(("0%","100%"),("0%","0%"))
+		lgacw.add_stop_color("0%","grey",0.7)
+		lgacw.add_stop_color("100%","black",1)
+		self.dwg.defs.add(lgacw)
+		self.lgacw = lgacw.get_paint_server()
 	
 	def genstate(self, id, x, y, tip = '', fill='white'):
 		g = self.dwg.g(id=id, fill='black')
@@ -64,7 +78,11 @@ class Drawer(object):
 				starty, cx1,starty, cx2,endy,x,endy)),stroke_width=5, stroke='black',
 				fill='none')
 			arc.set_desc(edge.action.name)
-			arc['marker-end']= self.marker.get_funciri()
+			arc['marker-end']= self.marker
+			if endy > starty :
+				arc['stroke'] = self.lgcw
+			else:
+				arc['stroke'] = self.lgacw
 			self.arcs.append(arc)
 	
 	def save(self):
