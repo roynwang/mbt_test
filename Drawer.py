@@ -59,7 +59,7 @@ class Drawer(object):
 			else:
 				continue
 			#use endy - starty to controll the arc heigh
-			cx1 = cx2 = x + (endy - starty)
+			cx1 = cx2 = x + 0.5*(endy - starty)
 			arc = self.dwg.path(d=("M {0},{1} C {2},{3} {4},{5} {6},{7}".format(x,
 				starty, cx1,starty, cx2,endy,x,endy)),stroke_width=5, stroke='black',
 				fill='none')

@@ -136,11 +136,14 @@ class Graph(object):
 
 	def getEurlerCircuit(self):
 		ret = []
+		ordered = []
 		#select start
 		start = self.getStartVex()[0]
 		#print "*****selected " + start.name + " as start "
 		#select edge
 		while 1:
+			if start not in ordered:
+				ordered.append(start)
 			#select the edge
 			for end in start.successor:
 				edge = self.getEdge(start, end, 0)
@@ -148,6 +151,7 @@ class Graph(object):
 					break
 			#return if no edge match
 			if edge is None:
+				self.vertexes = ordered
 				return ret
 			#mark as hitted
 			edge.hit()
