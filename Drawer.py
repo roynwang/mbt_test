@@ -4,15 +4,15 @@ from Edge import *
 class Drawer(object):
 	def __init__(self, graph):
 		#init start positin and delta constant
-		self.x = 800
-		self.y = 100
+		self.x = 300
+		self.y = 0
 		self.delta = 150
 		self.r  = 50
 		self.graph = graph
 
 		self.arcs = []
 		self.circles = []
-		self.dwg = svgwrite.Drawing("test.svg")
+		self.dwg = svgwrite.Drawing("test.svg",size=("100%","150%"), viewBox=('0,0,1900,900'))
 
 		#add marker
 		marker = self.dwg.marker(insert=(3,2), size=(10,10), orient='auto')
@@ -85,11 +85,17 @@ class Drawer(object):
 				arc['stroke'] = self.lgacw
 			self.arcs.append(arc)
 	
-	def save(self):
+	def save(self, vertical = 0):
+		#rot = "0degree";
+		#if vertical == 0:
+		#	rot = "rotate(-90, 800, 800)"
+		g = self.dwg.g(id='fsm')
+		#g['transform'] = rot
 		for circle in self.circles:
-			self.dwg.add(circle)
+			g.add(circle)
 		for arc in self.arcs:
-			self.dwg.add(arc)
+			g.add(arc)
+		self.dwg.add(g)
 		self.dwg.save()
 		
 
