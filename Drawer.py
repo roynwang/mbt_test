@@ -44,9 +44,12 @@ class Drawer(object):
 		g.add(text)
 		return g
 
-	def gen(self):
+	def gen(self, path = None):
 		id = 0
-		for vex in self.graph.vertexes:
+		if path is None:
+			path = self.graph.edges
+		vexes = self.graph.edges_to_vexes(path)
+		for vex in vexes:
 			fill = 'white'
 			if vex.postype == 1:
 				fill = 'grey'
@@ -54,7 +57,7 @@ class Drawer(object):
 			self.circles.append(sta)
 			#self.y += self.delta
 			id += 1
-		for edge in self.graph.edges:
+		for edge in path:
 			if edge.status == 1:
 				continue
 			starty = self.y  + self.graph.vertexes.index(edge.start)*self.delta
@@ -77,7 +80,8 @@ class Drawer(object):
 			arc = self.dwg.path(d=("M {0},{1} C {2},{3} {4},{5} {6},{7}".format(x,
 				starty, cx1,starty, cx2,endy,x,endy)),stroke_width=5, stroke='black',
 				fill='none')
-			arc.set_desc(edge.action.name)
+			get_desc = lambda x: (x is None and 'None') or str(x)
+			arc.set_desc(str(get_desc(edge.action)))
 			arc['marker-end']= self.marker
 			if endy > starty :
 				arc['stroke'] = self.lgcw

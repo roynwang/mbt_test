@@ -133,14 +133,14 @@ class Graph(object):
 			for vex in [outvex, invex]:
 				if vex.indegree == vex.outdegree :
 					Tset.remove(vex)
-	def refreshVertexes(self):
+	def edges_to_vexes(self, pathset):
 		ordered = []
-		for edge in self.edges:
+		for edge in pathset:
 			if not edge.start in ordered :
 				ordered.append(edge.start)
 			if not edge.end in ordered :
 				ordered.append(edge.end)
-		self.vertexes = ordered
+		return ordered
 
 	def getEurlerCircuit(self):
 		ret = []
@@ -160,7 +160,7 @@ class Graph(object):
 			#return if no edge match
 			if edge is None:
 				self.edges = ret
-				self.refreshVertexes()
+				self.vertexes = self.edges_to_vexes(self.edges)
 				return ret
 			#mark as hitted
 			edge.hit()
@@ -224,7 +224,7 @@ class Graph(object):
 			tail = self.convertVexesToPaths(tail)
 #		self.outputpath(head + path + tail)
 		return head + path + tail
-	def savesvg(self):
+	def savesvg(self, path = None):
 		drawer = Drawer(self)
 		drawer.gen()
 		print "save as svg file"
